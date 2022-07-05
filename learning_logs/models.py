@@ -16,8 +16,8 @@ class Entry(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE)#присвоить ключ, связь с топиком
     text = models.TextField() #атрибут для хранения текста
     data_added = models.DateTimeField(auto_now_add=True) #присвоить тек.дату
-    user_for_public = models.TextField(default='') #сохраняем имя создателя записи в общих темах
-    #user_for_public = ForeignKey(User, on_delete=models.CASCADE)
+    #user_for_public = models.TextField(default='') #сохраняем имя создателя записи в общих темах
+    user_for_public = models.ForeignKey(User, on_delete=models.CASCADE)
     class Meta:
         '''дополнительная информация по управл.моделью, форма множ.числа Entr'''
         verbose_name_plural = 'entreis'
