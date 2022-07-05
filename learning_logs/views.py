@@ -100,9 +100,6 @@ def edit_entry(request, entry_id):
     topic = entry.topic
     if f'{entry.user_for_public}' != f'{request.user}': #если тема не общая, то 
         raise Http404
-        #print(entry.user_for_public)
-        #print(request.user)
-        
     if request.method != 'POST':
         #исходный запрос, форма заполняется данными текущей записи
         form = EntryForm(instance=entry)
@@ -127,9 +124,9 @@ def del_topic(request, topic_id):
 @login_required        
 def del_entry(request, entry_id):
     '''определяет новую запись по теме'''
-    #topic = Topic.objects.get(id=topic_id)
     entry = Entry.objects.get(id=entry_id)
-    #chek_topic_owner(topic, request)
+    if f'{entry.user_for_public}' != f'{request.user}': #если тема не общая, то 
+        raise Http404
     entry.delete()
     return render(request, 'learning_logs/index.html')
 
