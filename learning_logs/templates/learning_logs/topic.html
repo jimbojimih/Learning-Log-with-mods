@@ -11,16 +11,18 @@
     {{ form.as_p }}
     <input type="submit" value="Добавить запись">
 </form> 
-
-  
   <ul>
   {% for entry in entries %}
     <li>
       <p>{{ entry.data_added|date:'M d, Y H:i' }}</p>
       <p>{{ entry.text|linebreaks }}</p>
       <p>
-	<a href="{% url 'learning_logs:edit_entry' entry.id %}">ред.</a>
-	<a href="{% url 'learning_logs:del_entry' entry.id %}">удал.</a>
+	{% if entry.user_for_public == request.user %}
+	  <a href="{% url 'learning_logs:edit_entry' entry.id %}">ред.</a>
+	  <a href="{% url 'learning_logs:del_entry' entry.id %}">удал.</a>
+	{% else %}
+	{% endif %}
+	
       </p>
     </li>  
   {% empty %}
