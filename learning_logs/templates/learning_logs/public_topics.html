@@ -1,0 +1,18 @@
+{% extends "learning_logs/base.html" %}
+{% block content %}
+  <p>Темы</p>
+  
+  <ul>
+    {% for topic in topics %}
+      <li>
+        <p>{{ topic.owner }} {{ topic.data_added|date:'M d, Y H:i' }}</p>
+	<a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>  
+      </li>
+    {% empty %}
+      <li>Нет добавленных тем.</li>
+    {% endfor %}
+  </ul>
+
+<a href="{% url 'learning_logs:new_public_topic' %}">Добавить новую тему</a>
+
+{% endblock content %}

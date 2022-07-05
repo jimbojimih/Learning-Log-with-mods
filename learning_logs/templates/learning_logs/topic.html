@@ -1,0 +1,31 @@
+{% extends "learning_logs/base.html" %}
+{% block content %}
+  <p>Тема:{{ topic }}</p>
+  {% if topic.owner == request.user %}
+    <a href="{% url 'learning_logs:del_topic' topic.id %}">удалить тему</a>
+  {% else %}
+  {% endif %}
+  <p>Записи:</p>
+  <form action="{% url 'learning_logs:new_entry' topic.id %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Добавить запись">
+</form> 
+
+  
+  <ul>
+  {% for entry in entries %}
+    <li>
+      <p>{{ entry.data_added|date:'M d, Y H:i' }}</p>
+      <p>{{ entry.text|linebreaks }}</p>
+      <p>
+	<a href="{% url 'learning_logs:edit_entry' entry.id %}">ред.</a>
+	<a href="{% url 'learning_logs:del_entry' entry.id %}">удал.</a>
+      </p>
+    </li>  
+  {% empty %}
+    <li>Пока нет записей.</li>
+    {% endfor %}
+  </ul>
+
+{% endblock content %}
