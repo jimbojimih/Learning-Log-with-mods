@@ -1,10 +1,11 @@
 <p>
-  <a href="{% url 'learning_logs:index' %}">О нас</a> -
+  <a href="{% url 'learning_logs:index' %}">О ресурсе</a> -
   <a href="{% url 'learning_logs:public_topics' %}">Общие темы</a> -
   <a href="{% url 'learning_logs:topics' %}">Мои темы</a> -
   {% if user.is_authenticated %}
     Привет, {{ user.username }}.
     <a href="{% url 'users:logout' %}">Выход</a>
+    <a href="{% url 'users:del_user' user.id %}">Удалить учётную запись</a>
   {% else %}
     <a href="{% url 'users:register' %}">Регистрация</a> 
     <a href="{% url 'users:login' %}">Вход</a>

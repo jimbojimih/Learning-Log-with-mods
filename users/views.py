@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 def register(request):
     """регистрируем нового пользователя"""
@@ -19,3 +20,11 @@ def register(request):
     #вывести пустую или недействительную форму
     context = {'form' : form}
     return render(request, 'registration/register.html', context)
+
+def del_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    #if request.user == user:
+    logout(request)
+    user.delete()
+    #    return redirect('learning_logs:index')
+    #else: raise Http404
