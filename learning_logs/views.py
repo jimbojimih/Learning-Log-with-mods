@@ -22,7 +22,7 @@ def public_topics(request):
     context = {'topics': topics}
     return render(request, 'learning_logs/public_topics.html', context)
 
-@login_required
+
 def topic(request, topic_id):
     '''одна тема и её записи'''
     topic = Topic.objects.get(id=topic_id)
@@ -93,7 +93,7 @@ def new_entry(request, topic_id):
     context = {'topic' : topic, 'form' : form}
     return render(request, 'learning_logs/new_entry.html', context)
 
-@login_required
+
 def edit_entry(request, entry_id):
     '''редактирует существующую запись'''
     entry = Entry.objects.get(id=entry_id)
@@ -113,7 +113,6 @@ def edit_entry(request, entry_id):
     context = {'entry' : entry, 'topic' : topic, 'form' : form}
     return render(request, 'learning_logs/edit_entry.html', context)
 
-@login_required        
 def del_topic(request, topic_id):
     '''определяет новую запись по теме'''
     topic = Topic.objects.get(id=topic_id)
@@ -121,7 +120,7 @@ def del_topic(request, topic_id):
     topic.delete()
     return render(request, 'learning_logs/index.html')
 
-@login_required        
+        
 def del_entry(request, entry_id):
     '''определяет новую запись по теме'''
     entry = Entry.objects.get(id=entry_id)
