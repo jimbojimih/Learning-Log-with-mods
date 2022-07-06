@@ -23,8 +23,8 @@ def register(request):
 
 def del_user(request, user_id):
     user = User.objects.get(id=user_id)
-    #if request.user == user:
-    logout(request)
-    user.delete()
-    #    return redirect('learning_logs:index')
-    #else: raise Http404
+    if request.user == user:
+        #logout(request)
+        user.delete()
+        return redirect('learning_logs:index')
+    else: raise Http404
