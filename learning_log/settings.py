@@ -129,4 +129,4 @@ LOGIN_URL = '/users/login/'
 
 #heroku
 import django_heroku
-django_heroku.setting(locals))
+django_heroku.setting(locals())
