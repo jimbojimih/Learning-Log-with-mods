@@ -95,8 +95,7 @@ def edit_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
     #checking edit and delete your entry
-    if entry.user_for_public != request.user:  
-        raise Http404
+    check_entry_user(entry, request)
     if request.method != 'POST':
         form = EntryForm(instance=entry)
     else:
@@ -115,8 +114,7 @@ def del_topic(request, topic_id):
 
 def del_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
-    if entry.user_for_public != request.user: 
-        raise Http404
+    check_entry_user(entry, request)
     entry.delete()
     return render(request, 'learning_logs/index.html')
 
@@ -126,6 +124,6 @@ def chek_topic_owner(topic, request):
         raise Http404
 
 def check_entry_user(entry, request):
-     '''check that the entry belongs to the current user'''
+    '''check that the entry belongs to the current user'''
     if entry.user_for_public != request.user:
         raise Http404   
