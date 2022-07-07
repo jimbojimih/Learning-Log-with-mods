@@ -4,26 +4,26 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 def register(request):
-    """регистрируем нового пользователя"""
+    """register a new user"""
     if request.method != 'POST':
-        #выводим пустую форму
+        #create a form
         form = UserCreationForm()
     else:
-        #обработка заполненной формы
+        #processing the completed form
         form = UserCreationForm(data=request.POST)
-
         if form.is_valid():
             new_user = form.save()
-            #выполнение входа и перенаправ. на дом страницу
             login(request, new_user)
             return redirect('learning_logs:index')
-    #вывести пустую или недействительную форму
+    #output form
     context = {'form' : form}
     return render(request, 'registration/register.html', context)
 
 def del_user(request, user_id):
+    """delete a user"""
     user = User.objects.get(id=user_id)
-    if request.user == user:
+    #this code is needed to delete only the current account
+    if request.user == user: 
         user.delete()
         return redirect('learning_logs:index')
     else: raise Http404

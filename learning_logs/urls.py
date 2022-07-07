@@ -6,22 +6,24 @@ from . import views
 
 app_name = 'learning_logs'
 urlpatterns = [
-    #домашняя страница
+    #home page
     path('', views.index, name ='index'),
-    #страница со списком всех тем.
+    #page with a list of all topics
     path('topics/', views.topics, name='topics'),
-    #страница со списком всех общих тем.
+    #page with a list of all public topics
     path('public_topics/', views.public_topics, name='public_topics'),
-    #страница с информацией по одной теме
+    #page with information about one topic
     path('topic/<int:topic_id>/', views.topic, name='topic'),
-    #страница для добавления новой темы
+    #page for adding a new topic
     path('new_topic/', views.new_topic, name='new_topic'),
-    #страница для добавления общей темы
+    #page for adding a new public topic
     path('new_public_topic/', views.new_public_topic, name='new_public_topic'),
-    #страница для добавления новой записи
+    #page for adding a new entry
     path('new_entry/<int:topic_id>/', views.new_entry, name='new_entry'),
+    #page for edit a entry
     path('edit_entry/<int:entry_id>/', views.edit_entry, name='edit_entry'),
-    #удалить топик
+    #delete topic
     path('del_topic/<int:topic_id>/', views.del_topic, name='del_topic'),
+    #delete entry
     path('del_entry/<int:entry_id>/', views.del_entry, name='del_entry'),
     ]
