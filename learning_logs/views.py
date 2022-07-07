@@ -5,28 +5,28 @@ from .forms import TopicForm, EntryForm
 from django.http import Http404
 
 def index(request):
-    '''домагная страница приложения Learning Log'''
+    '''home page'''
     return render(request, 'learning_logs/index.html')
 
 @login_required
 def topics(request):
-    '''выводим список тем'''
+    '''personal topics with the filter'''
     topics = Topic.objects.filter(owner=request.user).exclude(public=True).order_by('data_added')
     context = {'topics': topics}
     return render(request, 'learning_logs/topics.html', context)
 
-
 def public_topics(request):
-    '''выводим список общих тем'''
+    '''public topics with the filter'''
     topics = Topic.objects.filter(public=True).order_by('data_added')
     context = {'topics': topics}
     return render(request, 'learning_logs/public_topics.html', context)
 
-
 def topic(request, topic_id):
-    '''одна тема и её записи'''
+    '''one topic with entreis'''
     topic = Topic.objects.get(id=topic_id)
-    if topic.public == False: #если тема не общая, то 
+    #if the topic is not public, then we compare the creator
+    #of the topic and the user sending the request
+    if topic.public == False:  
         chek_topic_owner(topic, request)
     entries = topic.entry_set.order_by('-data_added')
     context = {'topic' : topic, 'entries' : entries}
@@ -34,31 +34,30 @@ def topic(request, topic_id):
 
 @login_required
 def new_topic(request):
-    '''определяет новую тему'''
+    '''create a new topic'''
     if request.method != 'POST':
-        #данные не отправлялись, создаётся пустая форма
+        #create a form
         form = TopicForm()
     else:
-        #Отправлены данные POST, обработать данные
+        #processing the completed form
         form = TopicForm(data = request.POST)
         if form.is_valid():
             new_topic = form.save(commit=False)
+            #create user attribute
             new_topic.owner = request.user
             new_topic.save()
             form.save()
             return redirect('learning_logs:topics')
-        #вывести пустую или недействительную форму.
+        #output form
     context = {'form' : form}
     return render(request, 'learning_logs/new_topic.html', context)
 
 @login_required
 def new_public_topic(request):
-    '''определяет новую общую тему'''
+    '''create a new public topic'''
     if request.method != 'POST':
-        #данные не отправлялись, создаётся пустая форма
         form = TopicForm()
     else:
-        #Отправлены данные POST, обработать данные
         form = TopicForm(data = request.POST)
         if form.is_valid():
             topic = form.save(commit=False)
@@ -67,70 +66,66 @@ def new_public_topic(request):
             topic.save()
             form.save()
             return redirect('learning_logs:public_topics')
-        #вывести пустую или недействительную форму.
     context = {'form' : form}
     return render(request, 'learning_logs/new_public_topic.html', context)
 
 @login_required        
 def new_entry(request, topic_id):
-    '''определяет новую запись по теме'''
+    '''create a new entry'''
     topic = Topic.objects.get(id=topic_id)
     if request.method != 'POST':
-        #данные не отправлялись, создаётся пустая форма
         form = EntryForm()
     else:
-        #Отправлены данные POST, обработать данные
         form = EntryForm(data = request.POST)
         if form.is_valid():
             new_entry = form.save(commit=False)
             new_entry.topic = topic
-            if topic.public == False: #если тема не общая, то
+            if topic.public == False: 
                 chek_topic_owner(topic, request)
+            #create an attribute needed to check for edit
+            #and delet of your entry in someone else's
+            #public topic
             new_entry.user_for_public = request.user
             new_entry.save()
             return redirect('learning_logs:topic', topic_id=topic.id)
-    #вывести пустую или недействительную форму.
     context = {'topic' : topic, 'form' : form}
     return render(request, 'learning_logs/new_entry.html', context)
 
-
 def edit_entry(request, entry_id):
-    '''редактирует существующую запись'''
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
-    if entry.user_for_public != request.user: #если тема не общая, то 
+    #checking edit and delete your entry
+    if entry.user_for_public != request.user:  
         raise Http404
     if request.method != 'POST':
-        #исходный запрос, форма заполняется данными текущей записи
         form = EntryForm(instance=entry)
     else:
-        #Отправка данных POST, обработать данные
         form = EntryForm(instance=entry, data = request.POST)
         if form.is_valid():
             form.save()
             return redirect('learning_logs:topic', topic_id=topic.id)
-    #вывести пустую или недействительную форму.
     context = {'entry' : entry, 'topic' : topic, 'form' : form}
     return render(request, 'learning_logs/edit_entry.html', context)
 
 def del_topic(request, topic_id):
-    '''определяет новую запись по теме'''
     topic = Topic.objects.get(id=topic_id)
     chek_topic_owner(topic, request)
     topic.delete()
     return render(request, 'learning_logs/index.html')
 
-        
 def del_entry(request, entry_id):
-    '''определяет новую запись по теме'''
     entry = Entry.objects.get(id=entry_id)
-    if entry.user_for_public != request.user: #если тема не общая, то 
+    if entry.user_for_public != request.user: 
         raise Http404
     entry.delete()
     return render(request, 'learning_logs/index.html')
 
 def chek_topic_owner(topic, request):
-    '''проверяем, что тема принадлежить текущему пользователю'''
+    '''check that the topic belongs to the current user'''
     if topic.owner != request.user:
         raise Http404
-        
+
+def check_entry_user(entry, request):
+     '''check that the entry belongs to the current user'''
+    if entry.user_for_public != request.user:
+        raise Http404   
