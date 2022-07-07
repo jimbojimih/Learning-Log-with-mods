@@ -1,7 +1,7 @@
 {% extends "learning_logs/base.html" %}
 {% block content %}
 <p>Add new topic</p>
-  
+<!--create a new public form form-->  
 <form action="{% url 'learning_logs:new_public_topic' %}" method='post'>
   {% csrf_token %}
   {{ form.as_p }}

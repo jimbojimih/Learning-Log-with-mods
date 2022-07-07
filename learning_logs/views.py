@@ -94,8 +94,7 @@ def new_entry(request, topic_id):
 def edit_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
     topic = entry.topic
-    #checking edit and delete your entry
-    check_entry_user(entry, request)
+    check_entry_user(entry, request) #checking edit and delete your entry
     if request.method != 'POST':
         form = EntryForm(instance=entry)
     else:
