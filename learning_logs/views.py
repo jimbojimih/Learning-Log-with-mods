@@ -109,13 +109,16 @@ def del_topic(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
     chek_topic_owner(topic, request)
     topic.delete()
-    return render(request, 'learning_logs/index.html')
+    if topic.public == True:
+        return redirect('learning_logs:public_topics')
+    else: return redirect('learning_logs:topics')
 
 def del_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
     check_entry_user(entry, request)
     entry.delete()
-    return render(request, 'learning_logs/index.html')
+    return redirect('learning_logs:topic', topic_id=topic.id)
 
 def chek_topic_owner(topic, request):
     '''check that the topic belongs to the current user'''
