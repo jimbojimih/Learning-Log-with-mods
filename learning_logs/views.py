@@ -46,7 +46,6 @@ def new_topic(request):
             #create user attribute
             new_topic.owner = request.user
             new_topic.save()
-            form.save()
             return redirect('learning_logs:topics')
         #output form
     context = {'form' : form}
@@ -64,7 +63,6 @@ def new_public_topic(request):
             topic.owner = request.user
             topic.public = True
             topic.save()
-            form.save()
             return redirect('learning_logs:public_topics')
     context = {'form' : form}
     return render(request, 'learning_logs/new_public_topic.html', context)
